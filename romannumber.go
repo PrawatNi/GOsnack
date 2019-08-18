@@ -13,14 +13,14 @@ func main() {
 }
 
 func convert2roman(x int) string{
-	result := ""
-	y := math.Mod(float64(x), 10)
-	z := (float64(x)-y)/10
-	
 	if x == 100 {
 		return "C"
 	}
 	
+	result := ""
+	y := math.Mod(float64(x), 10)
+	z := (float64(x)-y)/10
+		
 	//The ten
 	for z > 0 {
 		switch {
@@ -38,7 +38,6 @@ func convert2roman(x int) string{
 				z -= 1	
 		}
 	}
-
 	//The digit
 	for y > 0 {	
 		switch {
