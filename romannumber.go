@@ -30,7 +30,7 @@ func convert2roman(x int) string{
 			case z >= 5:
 				result += "L"
 				z -= 5
-			case z >=	4:
+			case z >= 4:
 				result += "XL"
 				z -= 4	
 			default:
@@ -41,10 +41,10 @@ func convert2roman(x int) string{
 	//The digit
 	for y > 0 {	
 		switch {
-			case y ==	9:
+			case y == 9:
 				result += "IX"
 				y -= 9
-			case y >=	5:
+			case y >= 5:
 				result += "V"
 				y -= 5	
 			case y == 4:
