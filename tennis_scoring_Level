@@ -1,0 +1,112 @@
+package main
+
+import (
+  "fmt"
+  "strconv"
+  "strings"
+)
+
+var tennisPointList = map[int]string{
+  0:  "Love",
+  15: "Fifteen",
+  30: "Thirty",
+  40: "Forty",
+  50: "Advantage",
+  60: "Win",
+}
+
+type TennisGame struct {
+  PlayerAName  string
+  PlayerBName  string
+  PlayerAScore int
+  PlayerBScore int
+}
+
+func (g TennisGame) CallPoint(tennisPoints string) string {
+  pointList := strings.Split(tennisPoints, "-")
+
+  //Check Input Format
+  var pointAExist, pointBExist bool
+  var pointA, pointB, tempPoint int
+  var err error
+  tempPoint, err = strconv.Atoi(pointList[0])
+  if err == nil {
+    _, pointAExist = tennisPointList[tempPoint]
+    pointA = tempPoint
+  } else {
+    return "Error Code: 01 - Incorrect Point on Left side"
+  }
+  tempPoint, err = strconv.Atoi(pointList[1])
+  if err == nil {
+    _, pointBExist = tennisPointList[tempPoint]
+    pointB = tempPoint
+  } else {
+    return "Error Code: 02 - Incorrect Point on Right side"
+  }
+
+  switch {
+  case len(pointList) != 2:
+    return "Error Code: 03 - Incorrect Tennis Point format (ex. 0-0)"
+  case !pointAExist:
+    return "Error Code: 04 - Incorrect Point on Left side (not 0,15,30,40,50,60)"
+  case !pointBExist:
+    return "Error Code: 05 - Incorrect Point on Right side (not 0,15,30,40,50,60)"
+  case (pointA == 50 && pointB != 40) || (pointB == 50 && pointA != 40):
+    return "Error Code: 06 - Cannot use  point as 50 if the other side is not 40"
+  }
+
+//Format Output
+  switch {
+  case pointA == 60:
+     return g.PlayerAName + " " + tennisPointList[pointA]
+  case pointB == 60:
+     return g.PlayerBName + " " + tennisPointList[pointB]
+  case (pointA == 50) && (pointB == 40):
+     return tennisPointList[pointA] + " In"
+  case (pointB == 50) && (pointA == 40):
+     return tennisPointList[pointB] + " Out"
+  case (pointA == pointB) && (pointA >= 40):
+     return "Deuce"
+  case (pointA == pointB):
+     if pointA == 0 {
+        return tennisPointList[pointA] + " - All ... " + g.PlayerAName + " serve"
+     } else {
+        return tennisPointList[pointA] + " - All"
+     }
+  default:
+     return tennisPointList[pointA] + " - " + tennisPointList[pointB]
+  }
+}
+
+func main() {
+   game := TennisGame{PlayerAName: "Ryu", PlayerBName: "Ken"}
+
+ //Leve1 - Good Case
+    fmt.Println("0-0   : " + game.CallPoint("0-0"))
+    fmt.Println("0-15  : " + game.CallPoint("0-15"))
+    fmt.Println("15-15 : " + game.CallPoint("15-15"))
+    fmt.Println("15-30 : " + game.CallPoint("15-30"))
+    fmt.Println("30-15 : " + game.CallPoint("30-15"))
+    fmt.Println("40-15 : " + game.CallPoint("40-15"))
+    fmt.Println("30-40 : " + game.CallPoint("30-40"))
+    fmt.Println("40-40 : " + game.CallPoint("40-40"))
+    fmt.Println("50-40 : " + game.CallPoint("50-40"))
+    fmt.Println("60-40 : " + game.CallPoint("60-40"))
+    fmt.Println("40-50 : " + game.CallPoint("40-50"))
+    fmt.Println("40-60 : " + game.CallPoint("40-60"))
+
+ //Leve1 - Error Case
+    fmt.Println("A     : " + game.CallPoint("A"))
+    fmt.Println("A-0   : " + game.CallPoint("A-0"))
+    fmt.Println("A-35  : " + game.CallPoint("A-35"))
+    fmt.Println("15-B  : " + game.CallPoint("15-B"))
+    fmt.Println("25-B  : " + game.CallPoint("25-B"))
+    fmt.Println("10-30-15 : " + game.CallPoint("10-30-15"))
+    fmt.Println("70-50 : " + game.CallPoint("70-50"))
+    fmt.Println("50-70 : " + game.CallPoint("50-70"))
+    fmt.Println("70-70 : " + game.CallPoint("70-70"))
+    fmt.Println("50-0  : " + game.CallPoint("50-0"))
+    fmt.Println("15-50 : " + game.CallPoint("15-50"))
+    fmt.Println("50-30 : " + game.CallPoint("50-30"))
+
+}
